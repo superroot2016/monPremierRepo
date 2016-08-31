@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+require 'dotenv'
+Dotenv.load
+require 'redisse'
+
+if count = ARGV.detect {|arg| arg.start_with?('N=') }
+  ARGV.delete(count)
+  count = count[/(\d+)/, 1].to_i
+else
+  count = 1
+end
+count.times do
+  puts "Event ##{ Redisse.publish ARGV[0], ARGV[1] => ARGV[2] } published"
+end
