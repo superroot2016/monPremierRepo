@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head><title>Redisse example: Rack app</title></head>
+<body>
+<h1>Redisse example: Rack app</h1>
+
+<p>Subscribed to: <span id=subscriptions></span></p>
+
+<form id=publish method=POST action=publish>
+  <label>Channel
+    <input name=channel value=global>
+  </label>
+  <label>Message
+    <input name=message value=Hello>
+  </label>
+  <input type=submit>
+</form>
+
+<pre id=log></pre>
+
+<script>
+  var subscriptions = document.getElementById('subscriptions')
+  var xhr = new XMLHttpRequest()
+  xhr.open('GET', '/subscriptions', false)
+  xhr.send(null)
+  subscriptions.innerHTML = xhr.responseText
+
+  var form = document.getElementById('publish')
+  form.addEventListener('submit', function(e) {
+    e.preventDefault()
+    var data = new FormData(form)
+    var xhr = new XMLHttpRequest()
+    xhr.open(form.method, form.action, false)
+    xhr.send(data)
+    return false
+  }, false)
+
+  var log = document.getElementById('log')
+  var source = new EventSource('/events')
+  source.addEventListener('message', function(e) {
+    log.innerHTML += e.data + "\n"
+  }, false)
+</script>
+
+</body>
+</html>
